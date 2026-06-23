@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SIG.BeautyDesk.Maui.Models"
+             x:Class="SIG.BeautyDesk.Maui.StaffAgendaPage"
+             Title="Staff Agenda">
+    <Grid Padding="16" RowDefinitions="Auto,Auto,Auto,*">
+        <Entry Grid.Row="0" Placeholder="Staff ID" Text="{Binding StaffIdText}" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" Margin="0,10,0,10">
+            <Button Grid.Column="0" Text="Load Agenda" Command="{Binding LoadAgendaCommand}" />
+            <Button Grid.Column="1" Text="Register Push" Command="{Binding RegisterPushCommand}" />
+            <Label Grid.Column="2" VerticalTextAlignment="Center" Text="{Binding StatusMessage}" />
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto,*" ColumnSpacing="8" Margin="0,0,0,8">
+            <Button Grid.Column="0" Text="Arrived" Command="{Binding MarkArrivedCommand}" />
+            <Button Grid.Column="1" Text="Completed" Command="{Binding MarkCompletedCommand}" />
+            <Button Grid.Column="2" Text="No Show" Command="{Binding MarkNoShowCommand}" />
+        </Grid>
+
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding Bookings}"
+                        SelectedItem="{Binding SelectedBooking, Mode=TwoWay}"
+                        SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:StaffAgendaBookingModel">
+                    <Grid ColumnDefinitions="2*,2*,2*,3*" Padding="8">
+                        <Label Grid.Column="0" Text="{Binding StartUtc, StringFormat='{0:HH:mm}'}" />
+                        <Label Grid.Column="1" Text="{Binding EndUtc, StringFormat='{0:HH:mm}'}" />
+                        <Label Grid.Column="2" Text="{Binding Status}" />
+                        <Label Grid.Column="3" Text="{Binding BookingId}" FontSize="10" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

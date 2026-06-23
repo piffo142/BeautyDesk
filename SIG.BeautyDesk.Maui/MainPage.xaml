@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SIG.BeautyDesk.Maui.Models"
+             x:Class="SIG.BeautyDesk.Maui.MainPage"
+             Title="Reception Desk">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="18" RowSpacing="10">
+        <Label Grid.Row="0" Text="Desktop Reception Booking Desk" FontSize="20" FontAttributes="Bold" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*">
+            <Entry Grid.Column="0" Placeholder="Customer ID" Text="{Binding CustomerIdText}" />
+            <Entry Grid.Column="1" Placeholder="Service ID" Text="{Binding ServiceIdText}" />
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
+            <Button Grid.Column="0" Text="Connect Live Alerts" Command="{Binding InitializeCommand}" />
+            <Button Grid.Column="1" Text="Load Availability" Command="{Binding LoadAvailabilityCommand}" />
+            <Label Grid.Column="2" VerticalTextAlignment="Center" Text="{Binding StatusMessage}" />
+            <Button Grid.Column="3" Text="Create Booking" Command="{Binding CreateBookingCommand}" />
+        </Grid>
+
+        <Label Grid.Row="3" Text="Available slots (resource-column style list for call-time booking)" />
+
+        <CollectionView Grid.Row="4"
+                        ItemsSource="{Binding Slots}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedSlot, Mode=TwoWay}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:AvailabilitySlotModel">
+                    <Grid ColumnDefinitions="2*,2*,2*,3*" Padding="8">
+                        <Label Grid.Column="0" Text="{Binding StartUtc, StringFormat='{0:HH:mm}'}" />
+                        <Label Grid.Column="1" Text="{Binding EndUtc, StringFormat='{0:HH:mm}'}" />
+                        <Label Grid.Column="2" Text="{Binding StaffId}" FontSize="10" />
+                        <Label Grid.Column="3" Text="{Binding ResourceId}" FontSize="10" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

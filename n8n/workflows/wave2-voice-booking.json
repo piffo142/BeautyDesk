@@ -1,0 +1,69 @@
+{
+  "name": "BeautyDesk Wave2 Voice Booking",
+  "nodes": [
+    {
+      "name": "Inbound Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "beautydesk/voice",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      }
+    },
+    {
+      "name": "Voice Intent Router",
+      "type": "n8n-nodes-base.switch",
+      "parameters": {
+        "propertyName": "={{$json.intent}}",
+        "rules": [
+          { "operation": "equal", "value": "get_availability" },
+          { "operation": "equal", "value": "identify_or_create_customer" },
+          { "operation": "equal", "value": "create_booking" },
+          { "operation": "equal", "value": "escalate_to_human" }
+        ]
+      }
+    },
+    {
+      "name": "Call BeautyDesk API",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.BEAUTYDESK_API_BASE_URL + '/api/n8n/voice/intents'}}",
+        "sendBody": true,
+        "jsonBody": "={{$json}}",
+        "authentication": "none",
+        "headerParametersUi": {
+          "parameter": [
+            { "name": "X-Api-Key", "value": "={{$env.BEAUTYDESK_N8N_API_KEY}}" },
+            { "name": "X-Timestamp", "value": "={{$now.toSeconds()}}" },
+            { "name": "X-Signature", "value": "={{$json.signature}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Return Voice Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}"
+      }
+    }
+  ],
+  "connections": {
+    "Inbound Webhook": {
+      "main": [[{ "node": "Voice Intent Router", "type": "main", "index": 0 }]]
+    },
+    "Voice Intent Router": {
+      "main": [
+        [{ "node": "Call BeautyDesk API", "type": "main", "index": 0 }],
+        [{ "node": "Call BeautyDesk API", "type": "main", "index": 0 }],
+        [{ "node": "Call BeautyDesk API", "type": "main", "index": 0 }],
+        [{ "node": "Call BeautyDesk API", "type": "main", "index": 0 }]
+      ]
+    },
+    "Call BeautyDesk API": {
+      "main": [[{ "node": "Return Voice Response", "type": "main", "index": 0 }]]
+    }
+  }
+}
