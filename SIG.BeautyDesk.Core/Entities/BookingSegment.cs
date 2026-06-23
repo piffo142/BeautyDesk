@@ -14,5 +14,7 @@ public sealed class BookingSegment
 
     public bool ResourceOccupied { get; set; }
 
+    public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+
     public Booking Booking { get; set; } = null!;
 }

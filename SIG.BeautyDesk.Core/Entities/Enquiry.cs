@@ -14,6 +14,8 @@ public sealed class Enquiry
 
     public string? InboundCallSid { get; set; }
 
+    public string? RecordingUrl { get; set; }
+
     public string? AssignedToUserId { get; set; }
 
     public DateTime CreatedUtc { get; set; }
@@ -21,6 +23,10 @@ public sealed class Enquiry
     public string? Tags { get; set; }
 
     public string? TranscriptText { get; set; }
+
+    public DateTime? EscalatedUtc { get; set; }
+
+    public string? EscalationReason { get; set; }
 
     public Customer Customer { get; set; } = null!;
 

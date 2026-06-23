@@ -12,6 +12,10 @@ public sealed class CallLog
 
     public int DurationSec { get; set; }
 
+    public DateTime CreatedUtc { get; set; }
+
+    public DateTime RetainUntilUtc { get; set; }
+
     public string? N8nWorkflowExecutionId { get; set; }
 
     public string? RawTranscriptJson { get; set; }

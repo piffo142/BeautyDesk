@@ -28,6 +28,9 @@ namespace SIG.BeautyDesk.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
@@ -43,6 +46,14 @@ namespace SIG.BeautyDesk.Data.Migrations
 
                     b.Property<Guid?>("EnquiryId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InboundCallSid")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("RecordingUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
 
                     b.Property<string>("RemindersSent")
                         .HasColumnType("nvarchar(max)");
@@ -67,6 +78,8 @@ namespace SIG.BeautyDesk.Data.Migrations
 
                     b.HasIndex("EnquiryId");
 
+                    b.HasIndex("InboundCallSid");
+
                     b.HasIndex("ResourceId");
 
                     b.HasIndex("ServiceId");
@@ -90,6 +103,12 @@ namespace SIG.BeautyDesk.Data.Migrations
 
                     b.Property<bool>("ResourceOccupied")
                         .HasColumnType("bit");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<bool>("StaffOccupied")
                         .HasColumnType("bit");
@@ -119,6 +138,9 @@ namespace SIG.BeautyDesk.Data.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("DurationSec")
                         .HasColumnType("int");
 
@@ -138,10 +160,15 @@ namespace SIG.BeautyDesk.Data.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
 
+                    b.Property<DateTime>("RetainUntilUtc")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CallSid")
                         .IsUnique();
+
+                    b.HasIndex("RetainUntilUtc");
 
                     b.ToTable("CallLogs", (string)null);
                 });
@@ -219,9 +246,20 @@ namespace SIG.BeautyDesk.Data.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("EscalatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EscalationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("InboundCallSid")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("RecordingUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -237,6 +275,8 @@ namespace SIG.BeautyDesk.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("InboundCallSid");
 
                     b.ToTable("Enquiries", (string)null);
                 });

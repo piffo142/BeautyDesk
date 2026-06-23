@@ -18,6 +18,8 @@ public sealed class Booking
 
     public BookingStatus Status { get; set; }
 
+    public DateTime CreatedUtc { get; set; }
+
     public bool DepositRequired { get; set; }
 
     public bool DepositPaid { get; set; }
@@ -25,6 +27,10 @@ public sealed class Booking
     public string? DepositTakenVia { get; set; }
 
     public string? RemindersSent { get; set; }
+
+    public string? InboundCallSid { get; set; }
+
+    public string? RecordingUrl { get; set; }
 
     public Enquiry? Enquiry { get; set; }
 
