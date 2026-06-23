@@ -8,6 +8,8 @@ public sealed class CreateBookingResponse
 
     public required BookingStatus Status { get; init; }
 
+    public required string SmsConfirmationStatus { get; init; }
+
     public required IReadOnlyList<CreateBookingSegmentResponse> Segments { get; init; }
 }
 

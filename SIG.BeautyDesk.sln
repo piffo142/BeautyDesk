@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIG.BeautyDesk.Data", "SIG.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIG.BeautyDesk.Api", "SIG.BeautyDesk.Api\SIG.BeautyDesk.Api.csproj", "{AAA00528-8632-46C8-AE14-9546042177B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIG.BeautyDesk.Maui", "SIG.BeautyDesk.Maui\SIG.BeautyDesk.Maui.csproj", "{6B64A4A6-062C-4D95-B728-8920811C9697}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{AAA00528-8632-46C8-AE14-9546042177B2}.Release|x64.Build.0 = Release|Any CPU
 		{AAA00528-8632-46C8-AE14-9546042177B2}.Release|x86.ActiveCfg = Release|Any CPU
 		{AAA00528-8632-46C8-AE14-9546042177B2}.Release|x86.Build.0 = Release|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Debug|x64.Build.0 = Debug|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Debug|x86.Build.0 = Debug|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Release|x64.ActiveCfg = Release|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Release|x64.Build.0 = Release|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Release|x86.ActiveCfg = Release|Any CPU
+		{6B64A4A6-062C-4D95-B728-8920811C9697}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,7 @@ builder.Services.AddSignalR();
 
 builder.Services.Configure<N8nAuthOptions>(builder.Configuration.GetSection(N8nAuthOptions.SectionName));
 builder.Services.Configure<CallLogRetentionOptions>(builder.Configuration.GetSection(CallLogRetentionOptions.SectionName));
+builder.Services.Configure<TwilioSmsOptions>(builder.Configuration.GetSection(TwilioSmsOptions.SectionName));
 
 builder.Services.AddDbContext<BeautyDeskDbContext>(options =>
     options.UseSqlServer(
@@ -20,9 +21,12 @@ builder.Services.AddDbContext<BeautyDeskDbContext>(options =>
         ?? "Server=(localdb)\\MSSQLLocalDB;Database=BeautyDesk;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"));
 
 builder.Services.AddScoped<BookingEngineService>();
+builder.Services.AddScoped<BookingConfirmationService>();
+builder.Services.AddScoped<N8nVoiceOrchestrationService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<EnquiryService>();
 builder.Services.AddScoped<MarketingMessagingService>();
+builder.Services.AddHttpClient<TwilioSmsGateway>();
 
 var app = builder.Build();
 
@@ -143,6 +147,16 @@ app.MapPost("/api/n8n/EscalateToHuman", async (
         return Results.Ok(response);
     })
     .WithName("N8nEscalateToHuman");
+
+app.MapPost("/api/n8n/voice/intents", async (
+        [FromBody] N8nVoiceIntentRequest request,
+        N8nVoiceOrchestrationService orchestrationService,
+        CancellationToken cancellationToken) =>
+    {
+        var response = await orchestrationService.HandleIntentAsync(request, cancellationToken);
+        return Results.Ok(response);
+    })
+    .WithName("N8nVoiceIntent");
 
 app.MapHub<ReceptionHub>("/hubs/reception");
 
