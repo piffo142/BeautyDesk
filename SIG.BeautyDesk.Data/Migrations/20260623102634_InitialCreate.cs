@@ -20,6 +20,8 @@ namespace SIG.BeautyDesk.Data.Migrations
                     FromNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     RecordingUrl = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true),
                     DurationSec = table.Column<int>(type: "int", nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RetainUntilUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     N8nWorkflowExecutionId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     RawTranscriptJson = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -109,10 +111,13 @@ namespace SIG.BeautyDesk.Data.Migrations
                     Channel = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     InboundCallSid = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    RecordingUrl = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true),
                     AssignedToUserId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Tags = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TranscriptText = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TranscriptText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EscalatedUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EscalationReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -136,10 +141,13 @@ namespace SIG.BeautyDesk.Data.Migrations
                     StaffId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
+                    CreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DepositRequired = table.Column<bool>(type: "bit", nullable: false),
                     DepositPaid = table.Column<bool>(type: "bit", nullable: false),
                     DepositTakenVia = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    RemindersSent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    RemindersSent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InboundCallSid = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    RecordingUrl = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -185,7 +193,8 @@ namespace SIG.BeautyDesk.Data.Migrations
                     StartUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StaffOccupied = table.Column<bool>(type: "bit", nullable: false),
-                    ResourceOccupied = table.Column<bool>(type: "bit", nullable: false)
+                    ResourceOccupied = table.Column<bool>(type: "bit", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -207,6 +216,11 @@ namespace SIG.BeautyDesk.Data.Migrations
                 name: "IX_Bookings_EnquiryId",
                 table: "Bookings",
                 column: "EnquiryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_InboundCallSid",
+                table: "Bookings",
+                column: "InboundCallSid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_ResourceId",
@@ -245,6 +259,11 @@ namespace SIG.BeautyDesk.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CallLogs_RetainUntilUtc",
+                table: "CallLogs",
+                column: "RetainUntilUtc");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Customers_Phone",
                 table: "Customers",
                 column: "Phone",
@@ -259,6 +278,11 @@ namespace SIG.BeautyDesk.Data.Migrations
                 name: "IX_Enquiries_CustomerId",
                 table: "Enquiries",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Enquiries_InboundCallSid",
+                table: "Enquiries",
+                column: "InboundCallSid");
         }
 
         /// <inheritdoc />

@@ -69,9 +69,12 @@ public sealed class BeautyDeskDbContext(DbContextOptions<BeautyDeskDbContext> op
         entity.Property(x => x.Channel).HasConversion<string>().HasMaxLength(24).IsRequired();
         entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(24).IsRequired();
         entity.Property(x => x.InboundCallSid).HasMaxLength(128);
+        entity.Property(x => x.RecordingUrl).HasMaxLength(2048);
         entity.Property(x => x.AssignedToUserId).HasMaxLength(128);
         entity.Property(x => x.Tags).HasColumnType("nvarchar(max)");
         entity.Property(x => x.CreatedUtc).IsRequired();
+        entity.Property(x => x.EscalationReason).HasMaxLength(500);
+        entity.HasIndex(x => x.InboundCallSid);
         entity.HasIndex(x => x.CustomerId);
         entity.HasOne(x => x.Customer)
             .WithMany(x => x.Enquiries)
@@ -115,12 +118,16 @@ public sealed class BeautyDeskDbContext(DbContextOptions<BeautyDeskDbContext> op
         entity.ToTable("Bookings");
         entity.HasKey(x => x.Id);
         entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(24).IsRequired();
+        entity.Property(x => x.CreatedUtc).IsRequired();
         entity.Property(x => x.DepositTakenVia).HasMaxLength(50);
         entity.Property(x => x.RemindersSent).HasColumnType("nvarchar(max)");
+        entity.Property(x => x.InboundCallSid).HasMaxLength(128);
+        entity.Property(x => x.RecordingUrl).HasMaxLength(2048);
         entity.HasIndex(x => x.CustomerId);
         entity.HasIndex(x => x.StaffId);
         entity.HasIndex(x => x.ResourceId);
         entity.HasIndex(x => x.EnquiryId);
+        entity.HasIndex(x => x.InboundCallSid);
         entity.HasOne(x => x.Customer)
             .WithMany(x => x.Bookings)
             .HasForeignKey(x => x.CustomerId)
@@ -150,6 +157,7 @@ public sealed class BeautyDeskDbContext(DbContextOptions<BeautyDeskDbContext> op
         entity.HasKey(x => x.Id);
         entity.Property(x => x.StartUtc).IsRequired();
         entity.Property(x => x.EndUtc).IsRequired();
+        entity.Property(x => x.RowVersion).IsRowVersion();
         entity.HasIndex(x => new { x.BookingId, x.StartUtc, x.EndUtc });
         entity.HasIndex(x => new { x.StaffOccupied, x.StartUtc, x.EndUtc });
         entity.HasIndex(x => new { x.ResourceOccupied, x.StartUtc, x.EndUtc });
@@ -168,7 +176,10 @@ public sealed class BeautyDeskDbContext(DbContextOptions<BeautyDeskDbContext> op
         entity.Property(x => x.FromNumber).HasMaxLength(20).IsRequired();
         entity.Property(x => x.RecordingUrl).HasMaxLength(2048);
         entity.Property(x => x.N8nWorkflowExecutionId).HasMaxLength(128);
+        entity.Property(x => x.CreatedUtc).IsRequired();
+        entity.Property(x => x.RetainUntilUtc).IsRequired();
         entity.HasIndex(x => x.CallSid).IsUnique();
+        entity.HasIndex(x => x.RetainUntilUtc);
     }
 
     private static void ConfigureUtcDateTimes(ModelBuilder modelBuilder)
