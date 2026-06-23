@@ -14,6 +14,7 @@ builder.Services.AddSignalR();
 builder.Services.Configure<N8nAuthOptions>(builder.Configuration.GetSection(N8nAuthOptions.SectionName));
 builder.Services.Configure<CallLogRetentionOptions>(builder.Configuration.GetSection(CallLogRetentionOptions.SectionName));
 builder.Services.Configure<TwilioSmsOptions>(builder.Configuration.GetSection(TwilioSmsOptions.SectionName));
+builder.Services.Configure<PushNotificationOptions>(builder.Configuration.GetSection(PushNotificationOptions.SectionName));
 
 builder.Services.AddDbContext<BeautyDeskDbContext>(options =>
     options.UseSqlServer(
@@ -23,6 +24,8 @@ builder.Services.AddDbContext<BeautyDeskDbContext>(options =>
 builder.Services.AddScoped<BookingEngineService>();
 builder.Services.AddScoped<BookingConfirmationService>();
 builder.Services.AddScoped<N8nVoiceOrchestrationService>();
+builder.Services.AddScoped<StaffAgendaService>();
+builder.Services.AddScoped<PushNotificationService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<EnquiryService>();
 builder.Services.AddScoped<MarketingMessagingService>();
@@ -97,6 +100,38 @@ app.MapPost("/api/contracts/EscalateToHuman", async (
         return Results.Ok(response);
     })
     .WithName("EscalateToHuman");
+
+app.MapGet("/api/staff/{staffId:guid}/agenda", async (
+        Guid staffId,
+        DateTime dayUtc,
+        StaffAgendaService staffAgendaService,
+        CancellationToken cancellationToken) =>
+    {
+        var response = await staffAgendaService.GetAgendaAsync(staffId, dayUtc, cancellationToken);
+        return Results.Ok(response);
+    })
+    .WithName("GetStaffAgenda");
+
+app.MapPatch("/api/bookings/{bookingId:guid}/status", async (
+        Guid bookingId,
+        [FromBody] UpdateBookingStatusRequest request,
+        StaffAgendaService staffAgendaService,
+        CancellationToken cancellationToken) =>
+    {
+        await staffAgendaService.UpdateStatusAsync(bookingId, request.Status, cancellationToken);
+        return Results.NoContent();
+    })
+    .WithName("UpdateBookingStatus");
+
+app.MapPost("/api/push/register", async (
+        [FromBody] RegisterPushDeviceRequest request,
+        PushNotificationService pushNotificationService,
+        CancellationToken cancellationToken) =>
+    {
+        await pushNotificationService.RegisterDeviceAsync(request, cancellationToken);
+        return Results.NoContent();
+    })
+    .WithName("RegisterPushDevice");
 
 app.MapPost("/api/communications/marketing-sms", async (
         [FromBody] MarketingSmsRequest request,

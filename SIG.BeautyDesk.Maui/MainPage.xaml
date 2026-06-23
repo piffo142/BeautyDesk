@@ -6,7 +6,7 @@
              Title="Reception Desk">
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="18" RowSpacing="10">
-        <Label Grid.Row="0" Text="Windows Reception Booking Desk" FontSize="20" FontAttributes="Bold" />
+        <Label Grid.Row="0" Text="Desktop Reception Booking Desk" FontSize="20" FontAttributes="Bold" />
 
         <Grid Grid.Row="1" ColumnDefinitions="*,*">
             <Entry Grid.Column="0" Placeholder="Customer ID" Text="{Binding CustomerIdText}" />

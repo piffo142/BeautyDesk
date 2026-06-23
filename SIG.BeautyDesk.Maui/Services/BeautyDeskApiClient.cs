@@ -54,6 +54,36 @@ public sealed class BeautyDeskApiClient(HttpClient httpClient)
         return payload?.BookingId.ToString() ?? throw new InvalidOperationException("Missing booking id.");
     }
 
+    public async Task<IReadOnlyList<StaffAgendaBookingModel>> GetStaffAgendaAsync(
+        Guid staffId,
+        DateTime dayUtc,
+        CancellationToken cancellationToken)
+    {
+        var dayText = Uri.EscapeDataString(dayUtc.ToString("O"));
+        using var response = await httpClient.GetAsync($"/api/staff/{staffId}/agenda?dayUtc={dayText}", cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var payload = await response.Content.ReadFromJsonAsync<StaffAgendaResponse>(cancellationToken);
+        return payload?.Bookings ?? [];
+    }
+
+    public async Task UpdateBookingStatusAsync(Guid bookingId, string status, CancellationToken cancellationToken)
+    {
+        using var response = await httpClient.PatchAsJsonAsync(
+            $"/api/bookings/{bookingId}/status",
+            new { status },
+            cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task RegisterPushDeviceAsync(Guid staffId, int platform, string pushToken, CancellationToken cancellationToken)
+    {
+        using var response = await httpClient.PostAsJsonAsync(
+            "/api/push/register",
+            new { staffId, platform, pushToken },
+            cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
     private sealed class GetAvailabilityResponse
     {
         public required List<AvailabilitySlotModel> Slots { get; init; }
@@ -62,5 +92,10 @@ public sealed class BeautyDeskApiClient(HttpClient httpClient)
     private sealed class CreateBookingResponse
     {
         public required Guid BookingId { get; init; }
+    }
+
+    private sealed class StaffAgendaResponse
+    {
+        public required List<StaffAgendaBookingModel> Bookings { get; init; }
     }
 }

@@ -15,4 +15,6 @@ public sealed class Staff
     public ICollection<Customer> PreferredByCustomers { get; set; } = new List<Customer>();
 
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
+    public ICollection<StaffDevice> Devices { get; set; } = new List<StaffDevice>();
 }

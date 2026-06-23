@@ -13,7 +13,8 @@ namespace SIG.BeautyDesk.Api.Services;
 public sealed class BookingEngineService(
     BeautyDeskDbContext dbContext,
     IOptions<CallLogRetentionOptions> retentionOptions,
-    BookingConfirmationService bookingConfirmationService)
+    BookingConfirmationService bookingConfirmationService,
+    PushNotificationService pushNotificationService)
 {
     private static readonly BookingStatus[] ActiveStatuses =
     [
@@ -262,6 +263,12 @@ public sealed class BookingEngineService(
             customer,
             service,
             booking.Segments.ToList(),
+            cancellationToken);
+
+        await pushNotificationService.NotifyStaffAsync(
+            booking.StaffId,
+            "New booking assigned",
+            $"Booking {booking.Id} starts at {booking.Segments.Min(x => x.StartUtc):yyyy-MM-dd HH:mm} UTC.",
             cancellationToken);
 
         return new CreateBookingResponse

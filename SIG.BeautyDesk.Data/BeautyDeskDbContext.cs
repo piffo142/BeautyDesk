@@ -23,6 +23,8 @@ public sealed class BeautyDeskDbContext(DbContextOptions<BeautyDeskDbContext> op
 
     public DbSet<CallLog> CallLogs => Set<CallLog>();
 
+    public DbSet<StaffDevice> StaffDevices => Set<StaffDevice>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -35,6 +37,7 @@ public sealed class BeautyDeskDbContext(DbContextOptions<BeautyDeskDbContext> op
         ConfigureBooking(modelBuilder);
         ConfigureBookingSegment(modelBuilder);
         ConfigureCallLog(modelBuilder);
+        ConfigureStaffDevice(modelBuilder);
         ConfigureUtcDateTimes(modelBuilder);
     }
 
@@ -180,6 +183,23 @@ public sealed class BeautyDeskDbContext(DbContextOptions<BeautyDeskDbContext> op
         entity.Property(x => x.RetainUntilUtc).IsRequired();
         entity.HasIndex(x => x.CallSid).IsUnique();
         entity.HasIndex(x => x.RetainUntilUtc);
+    }
+
+    private static void ConfigureStaffDevice(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<StaffDevice>();
+        entity.ToTable("StaffDevices");
+        entity.HasKey(x => x.Id);
+        entity.Property(x => x.Platform).HasConversion<string>().HasMaxLength(20).IsRequired();
+        entity.Property(x => x.PushToken).HasMaxLength(512).IsRequired();
+        entity.Property(x => x.Enabled).HasDefaultValue(true);
+        entity.Property(x => x.CreatedUtc).IsRequired();
+        entity.Property(x => x.UpdatedUtc).IsRequired();
+        entity.HasIndex(x => new { x.StaffId, x.PushToken }).IsUnique();
+        entity.HasOne(x => x.Staff)
+            .WithMany(x => x.Devices)
+            .HasForeignKey(x => x.StaffId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     private static void ConfigureUtcDateTimes(ModelBuilder modelBuilder)

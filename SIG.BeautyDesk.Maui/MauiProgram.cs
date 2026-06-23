@@ -21,9 +21,12 @@ public static class MauiProgram
 		{
 			client.BaseAddress = new Uri("http://localhost:5000");
 		});
+		builder.Services.AddTransient<PushRegistrationService>();
 		builder.Services.AddSingleton<ReceptionRealtimeClient>();
 		builder.Services.AddTransient<ReceptionViewModel>();
+		builder.Services.AddTransient<StaffAgendaViewModel>();
 		builder.Services.AddTransient<MainPage>();
+		builder.Services.AddTransient<StaffAgendaPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();
